@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📂 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🦫 Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache-dependency-path: '**/*.sum'
+
+      - name: 🔦 Audit
+        run: CGO_ENABLED=1 make audit
