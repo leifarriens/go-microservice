@@ -1,0 +1,158 @@
+definitions:
+  handler.GetAllProductsResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/model.Product'
+        type: array
+      limit:
+        type: integer
+      offset:
+        type: integer
+    required:
+    - items
+    - limit
+    - offset
+    type: object
+  model.Product:
+    properties:
+      available:
+        type: boolean
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      updatedAt:
+        type: string
+    required:
+    - available
+    - createdAt
+    - id
+    - name
+    - price
+    - updatedAt
+    type: object
+  model.ProductDto:
+    properties:
+      available:
+        type: boolean
+      name:
+        type: string
+      price:
+        minimum: 0
+        type: number
+    required:
+    - available
+    - name
+    - price
+    type: object
+info:
+  contact: {}
+paths:
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Get all products
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.GetAllProductsResponse'
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: Get all products
+      tags:
+      - product
+    post:
+      consumes:
+      - application/json
+      description: Create product
+      parameters:
+      - description: The input product struct
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProductDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Product'
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: Create product
+      tags:
+      - product
+  /products/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get products by id
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Product'
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: Get products by id
+      tags:
+      - product
+swagger: "2.0"
