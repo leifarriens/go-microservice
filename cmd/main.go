@@ -8,8 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	"gorm.io/driver/sqlite"
-
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/leifarriens/go-microservice/docs"
@@ -18,11 +17,21 @@ import (
 	"github.com/leifarriens/go-microservice/service"
 	"github.com/leifarriens/go-microservice/utils"
 	echoSwagger "github.com/swaggo/echo-swagger"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Println(err)
+	}
+}
+
 func main() {
-	db, err := gorm.Open(sqlite.Open("service.db"), &gorm.Config{})
+	connStr := utils.GetDBConnectionString()
+
+	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
 		log.Fatalln(err)
 	}
