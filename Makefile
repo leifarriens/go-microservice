@@ -1,7 +1,3 @@
-# Change these variables as necessary.
-main_package_path = ./cmd/main.go
-binary_name = service
-
 # ==================================================================================== #
 # HELPERS
 # ==================================================================================== #
@@ -58,34 +54,15 @@ tidy:
 	go fmt ./...
 	go run github.com/swaggo/swag/cmd/swag@latest fmt
 
-## build: build the application
-.PHONY: build
-build: docs
-	# Include additional build steps, like TypeScript, SCSS or Tailwind compilation here...
-	go build -o=./tmp/bin/${binary_name} ${main_package_path}
-
 ## run: run the  application
 .PHONY: run
-run: build
-	./tmp/bin/${binary_name}
+run:
+	docker compose up --build
 
 ## run/live: run the application with reloading on file changes
 .PHONY: run/live
 run/live:
-	go run github.com/cosmtrek/air@v1.43.0 \
-		--build.cmd "make build" --build.bin "./tmp/bin/${binary_name}" --build.delay "100" \
-		--build.exclude_dir "docs" \
-		--build.include_ext "go, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
-		--misc.clean_on_exit "true"
-
-## docs: generate swagger docs
-.PHONY: docs
-docs:
-	go run github.com/swaggo/swag/cmd/swag@latest init \
-		--dir ./cmd,./model/,./handler/ \
-		--generalInfo main.go \
-		--requiredByDefault \
-		--outputTypes yaml,go
+	docker compose -f docker-compose.dev.yaml up --build
 
 
 # ==================================================================================== #

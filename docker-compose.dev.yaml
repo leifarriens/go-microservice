@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      target: prod
+      target: dev
     init: true
     volumes:
       - type: bind

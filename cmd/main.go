@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -51,6 +52,14 @@ func main() {
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
+	e.GET("/ping", func(c echo.Context) error {
+		var dbTime time.Time
+
+		db.Raw("SELECT NOW()").Scan(&dbTime)
+
+		return c.JSON(http.StatusOK, fmt.Sprintf("OK %s", dbTime))
+	})
+
 	handler.NewHandler(&handler.HandlerConfig{
 		E:              e,
 		ProductService: productService,
@@ -60,7 +69,7 @@ func main() {
 	// Start server
 	go func() {
 		if err := e.Start(":" + "8080"); err != nil && err != http.ErrServerClosed {
-			e.Logger.Fatal("shutting down the server")
+			e.Logger.Fatal("shutting down the server %v", err)
 		}
 	}()
 
